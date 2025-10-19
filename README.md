@@ -2,8 +2,6 @@
 Revision for Coroutines
 
 
-		Kotlin Coroutines
-
 
 1. Threads:
 
@@ -161,14 +159,55 @@ Now, we can do:
    For exception handling.
 
 
----
-
 ⦁	State of Jobs:  
 
 When we create a job, by default, it is in the NEW State.
 ⦁	job.isActive(), job.isCompleted(), job.isCancelled()
 
-<img width="1829" height="875" alt="Screenshot 2025-10-19 220507" src="https://github.com/user-attachments/assets/fdf8884d-223c-4ad9-ac35-a9aa2bc83c31" />
+<img width="700" height="350" alt="Screenshot 2025-10-19 220507" src="https://github.com/user-attachments/assets/fdf8884d-223c-4ad9-ac35-a9aa2bc83c31" />
+
+
+
+⦁	Parent-Children Relation:  
+We can create many children of Coroutine like -> `launch { launch { launch {} } }`  
+
+Whenever any children throws exception then the all the parent hierarchy is stopped and the exception is thrown.  
+
+To handle this we can create **supervisor Jobs** which can still perform the tasks even if any children throws exceptions.
+
+
+---
+
+⦁	Coroutine Scope:
+
+It is the context that manage the lifecycle of the Coroutine.  
+All the Coroutine gets cancelled when it's lifecycle gets cancelled.
+
+
+5 types:
+
+1. **GlobalScope:**  
+   Its lifecycle is tied to the application.  
+   Not recommended because it can cause memory leaks.
+
+2. **MainScope:**  
+   Used for UI as it uses Main thread.
+
+3. **lifeCycleScope:**  
+   Tied with the activity/fragment lifecycle.  
+   When activity/fragment lifecycle is destroyed, all coroutines with this CoroutineScope also get destroyed.  
+   If anything not related to UI, can use this.  
+   Also, we can switch anytime we want by using `withContext()`.
+
+4. **viewModelScope:**  
+   Tied to the ViewModel.  
+   When ViewModel lifecycle is destroyed, all coroutines with this CoroutineScope also get destroyed.
+
+5. **Custom Scope:**  
+   We can create our own custom Coroutine scope.  
+   Create the job, then define  
+   `scope = CoroutineScope(job + Dispatcher.Main)`  
+   Just simply do `scope.launch {}` and also `scope.cancel()`.
 
 
 
